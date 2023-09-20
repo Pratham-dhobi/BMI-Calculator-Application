@@ -35,12 +35,11 @@ public class HomeScreenActivity extends AppCompatActivity {
         BMI_val.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Feet_Inch feet_inch=new Feet_Inch();
                 int age = Integer.parseInt(age_val.getText().toString());
                 int weight = Integer.parseInt(weight_val.getText().toString());
                 String msg;
-                int ft=feet_inch.feet_value;
-                int ich=feet_inch.inch_value;
+                int ft=feet_val.getValue();
+                int ich=inch_val.getValue();
                 float Total_feet = (float) (ft + (ich / 12.0f));
                 float meter = Total_feet * 0.304f;
                 float BMI = weight / (meter * meter);
@@ -60,28 +59,6 @@ public class HomeScreenActivity extends AppCompatActivity {
                 });
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
-            }
-        });
-    }
-}
-class Feet_Inch{
-    int feet_value;
-    int inch_value;
-    public void feet(){
-        HomeScreenActivity homeScreenActivity = new HomeScreenActivity();
-        homeScreenActivity.feet_val.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int old_val, int curr_val) {
-                 feet_value = curr_val;
-            }
-        });
-    }
-    public void inch(){
-        HomeScreenActivity homeScreenActivity=new HomeScreenActivity();
-        homeScreenActivity.inch_val.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int old_val, int curr_val) {
-                inch_value = curr_val;
             }
         });
     }
