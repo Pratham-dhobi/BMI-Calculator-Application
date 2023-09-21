@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,32 +34,55 @@ public class HomeScreenActivity extends AppCompatActivity {
         inch_val.setMinValue(0);
 
         BMI_val.setOnClickListener(new View.OnClickListener() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomeScreenActivity.this);
             @Override
             public void onClick(View view) {
-                int age = Integer.parseInt(age_val.getText().toString());
-                int weight = Integer.parseInt(weight_val.getText().toString());
-                String msg;
-                int ft=feet_val.getValue();
-                int ich=inch_val.getValue();
-                float Total_feet = (float) (ft + (ich / 12.0f));
-                float meter = Total_feet * 0.304f;
-                float BMI = weight / (meter * meter);
-                if(BMI<19.0f){
-                    msg="Under Weight";
-                }else if(BMI>=19.0f && BMI<=25.0f){
-                    msg="Normal";
-                }else{
-                    msg="Over Weight";
+                try{
+                    String agestr = age_val.getText().toString();
+                    String weightstr = weight_val.getText().toString();
+                    int ft=feet_val.getValue();
+                    int ich=inch_val.getValue();
+                    if(TextUtils.isEmpty(weightstr)){
+                        throw new IllegalArgumentException("Please enter a weight value.");
+                    }
+                    if(ft==0 && ich==0) {
+                        throw new IllegalArgumentException("Please enter a height value");
+                    }
+                    if(TextUtils.isEmpty(agestr)){
+                        throw new IllegalArgumentException("Please enter a age value.");
+                    }
+                    int age = Integer.parseInt(agestr);
+                    int weight = Integer.parseInt(weightstr);
+                    String msg;
+
+                    float Total_feet = (float) (ft + (ich / 12.0f));
+                    float meter = Total_feet * 0.304f;
+                    float BMI = weight / (meter * meter);
+                    if (BMI < 19.0f) {
+                        msg = "You are underweight.";
+                    } else if (BMI >= 19.0f && BMI <= 25.0f) {
+                        msg = "You are normal.";
+                    } else {
+                        msg = "You are overweight.";
+                    }
+                    builder.setTitle("Result");
+                    builder.setMessage("Your BMI number is " + BMI + ".\n" + msg);
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("OK", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        dialog.cancel();
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }catch(IllegalArgumentException e){
+                    builder.setTitle("Alert");
+                    builder.setMessage(e.getMessage());
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("OK", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        dialog.cancel();
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
-                AlertDialog.Builder builder=new AlertDialog.Builder(HomeScreenActivity.this);
-                builder.setTitle("Result");
-                builder.setMessage("Your BMI number is "+ BMI +"\n"+msg);
-                builder.setCancelable(true);
-                builder.setPositiveButton("OK", (DialogInterface.OnClickListener) (dialog, which)->{
-                    finish();
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
             }
         });
     }
